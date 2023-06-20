@@ -7,10 +7,13 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ddns", "ddns.vbproj", "{686
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		ddns_x64|Any CPU = ddns_x64|Any CPU
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6867A641-ADBB-489C-AD9F-8B8159469002}.ddns_x64|Any CPU.ActiveCfg = ddns_x64|Any CPU
+		{6867A641-ADBB-489C-AD9F-8B8159469002}.ddns_x64|Any CPU.Build.0 = ddns_x64|Any CPU
 		{6867A641-ADBB-489C-AD9F-8B8159469002}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6867A641-ADBB-489C-AD9F-8B8159469002}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6867A641-ADBB-489C-AD9F-8B8159469002}.Release|Any CPU.ActiveCfg = Release|Any CPU

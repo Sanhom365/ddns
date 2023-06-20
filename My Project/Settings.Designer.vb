@@ -80,7 +80,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("https://dynv6.com/api/update?")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("https://dynv6.com/api/update")>  _
         Public Property URL() As String
             Get
                 Return CType(Me("URL"),String)
@@ -92,7 +92,7 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("hostname={0}&token={1}&ipv6={2}&ipv6prefix={3}")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("?hostname={0}&token={1}&ipv6={2}")>  _
         Public Property param() As String
             Get
                 Return CType(Me("param"),String)
@@ -111,6 +111,30 @@ Namespace My
             End Get
             Set
                 Me("isp") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+        Public Property suffix() As String
+            Get
+                Return CType(Me("suffix"),String)
+            End Get
+            Set
+                Me("suffix") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+        Public Property suffix_switch() As Boolean
+            Get
+                Return CType(Me("suffix_switch"),Boolean)
+            End Get
+            Set
+                Me("suffix_switch") = value
             End Set
         End Property
     End Class
