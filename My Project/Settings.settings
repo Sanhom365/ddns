@@ -12,7 +12,7 @@
       <Value Profile="(Default)">https://dynv6.com/api/update</Value>
     </Setting>
     <Setting Name="param" Type="System.String" Scope="User">
-      <Value Profile="(Default)">?hostname={0}&amp;token={1}&amp;ipv6={2}</Value>
+      <Value Profile="(Default)">?hostname={0}&amp;token={1}&amp;ipv6={2}/64&amp;ipv6prefix={3}/64</Value>
     </Setting>
     <Setting Name="isp" Type="System.String" Scope="User">
       <Value Profile="(Default)" />

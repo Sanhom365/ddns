@@ -42,7 +42,7 @@ Module ModuleMain
 	Function GetIP(host As String, Optional l As Byte = 0) As String()
 		Dim ipAddress() As IPAddress = Dns.GetHostAddresses(host)
 		If l = 0 Then
-			l = ipAddress.Length - 1
+			l = CByte(ipAddress.Length - 1)
 		End If
 		Dim IPv6(l) As String
 		Dim ip As IPAddress
@@ -78,7 +78,7 @@ Module ModuleMain
 			Next
 			If flag AndAlso i <= l Then
 				' 把属于 isp 的 ip 地址存在 IPv6 数组里
-				IPv6(i) = ip.ToString
+				IPv6(i) = ip.ToString.ToLower
 				i += 1
 			End If
 		Next
@@ -91,7 +91,7 @@ Module ModuleMain
 			Console.WriteLine(Process() & "域名 " & domain & " 的 IPv6 地址没有变化，本次更新不执行。")
 		Else
 			Console.WriteLine(Process() & "正在更新域名 " & domain & " 的 IPv6 地址为：" & newip)
-			Dim postData As String = String.Format(My.Settings.param, {domain, token, newip})
+			Dim postData As String = String.Format(My.Settings.param, {domain, token, newip, newip.Substring(0, newip.LastIndexOf(":") + 1)})
 			Try
 				Dim http As New WebClient
 				http.Headers(HttpRequestHeader.ContentType) = "application/x-www-form-urlencoded"
