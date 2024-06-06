@@ -80,25 +80,13 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("https://dynv6.com/api/update")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("https://dynv6.com/api/update?")>  _
         Public Property URL() As String
             Get
                 Return CType(Me("URL"),String)
             End Get
             Set
                 Me("URL") = value
-            End Set
-        End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("?hostname={0}&token={1}&ipv6={2}/64&ipv6prefix={3}/64")>  _
-        Public Property param() As String
-            Get
-                Return CType(Me("param"),String)
-            End Get
-            Set
-                Me("param") = value
             End Set
         End Property
         
@@ -128,13 +116,49 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
         Public Property suffix_switch() As Boolean
             Get
                 Return CType(Me("suffix_switch"),Boolean)
             End Get
             Set
                 Me("suffix_switch") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("hostname={0}&token={1}&ipv6={2}/64&ipv6prefix={3}/64")>  _
+        Public Property param() As String
+            Get
+                Return CType(Me("param"),String)
+            End Get
+            Set
+                Me("param") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("zone={0}&token={1}&ipv4={2}")>  _
+        Public Property param4() As String
+            Get
+                Return CType(Me("param4"),String)
+            End Get
+            Set
+                Me("param4") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("")>  _
+        Public Property subdomain() As String
+            Get
+                Return CType(Me("subdomain"),String)
+            End Get
+            Set
+                Me("subdomain") = value
             End Set
         End Property
     End Class

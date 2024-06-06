@@ -1,19 +1,23 @@
 ﻿Imports System.Net
 Imports System.Text
+Imports System.Net.Http
 
 Module ModuleMain
-	Dim isps() As String = My.Settings.isp.Split(",")
+	Dim isps() As String = My.Settings.isp.Split(CChar(","))
+	Dim domains() As String = My.Settings.domains.Split(CChar(","))
 
 	Sub Main()
 		Console.WriteLine(Process() & "动态域名 IP 地址更新开始" & vbCrLf)
-		Dim domains() As String = My.Settings.domains.Split(",")
-		Dim tokens() As String = My.Settings.tokens.Split(",")
+		Dim tokens() As String = My.Settings.tokens.Split(CChar(","))
 		Dim IPv6() As String = GetIP(Dns.GetHostName)
+		Dim IPv4(tokens.Length - 1) As String
 		Dim used(domains.Length - 1) As String
+		Dim client As New HttpClient()
+		Dim response As String = client.GetStringAsync("https://4.ipw.cn").GetAwaiter().GetResult()
 		Console.WriteLine()
-		For i As Byte = 0 To domains.Length - 1
+		For i As Integer = 0 To domains.Length - 1
 			'处理每个域名
-			For j As Byte = 0 To IPv6.Length - 1
+			For j As Integer = 0 To IPv6.Length - 1
 				' 如果第i个 IP 地址字符串存在
 				If IPv6(j) IsNot Nothing AndAlso Not Array.Exists(used, Function(str) str = IPv6(j)) Then
 					' 定义更新前的 IP 地址字符串数组，并获取某个域名的 IPv6 地址
@@ -31,67 +35,80 @@ Module ModuleMain
 					End If
 				End If
 			Next
+			IPv4(i) = GetIP(domains(i), 0, 4)(0)
+			If response.Length > 0 Then
+				UpdateIP(domains(i), tokens(i), response, IPv4(i), 4)
+			End If
 		Next
-		Console.WriteLine(vbCrLf & Process() & "本轮更新结束。")
+		Console.WriteLine($"{vbCrLf}{Process()}本轮更新结束。")
 	End Sub
 
 	Function Process() As String
 		Return "[" & Now.ToString("yyyy年MM月dd日 HH:mm:ss") & "] "
 	End Function
 
-	Function GetIP(host As String, Optional l As Byte = 0) As String()
-		Dim ipAddress() As IPAddress = Dns.GetHostAddresses(host)
+	Function GetIP(ByVal host As String, Optional ByVal l As Integer = 0, Optional ByVal v As Byte = 6) As String()
+		Dim ipAddr() As IPAddress = Dns.GetHostAddresses(host)
 		If l = 0 Then
-			l = CByte(ipAddress.Length - 1)
+			l = ipAddr.Length - 1
 		End If
-		Dim IPv6(l) As String
+		Dim ipRecode(l) As String
 		Dim ip As IPAddress
-		Dim i As Byte = 0
+		Dim i As Integer = 0
 		Dim flag As Boolean
 		Dim isp As String
 		If Dns.GetHostName = host Then
 			Console.WriteLine(Process() & "本机的 IP 地址有：")
 		End If
 		' 遍历 ipAddress 中的所有 ip 地址
-		For Each ip In ipAddress
+		For Each ip In ipAddr
 			' 如果主机名为本机名
 			If Dns.GetHostName = host Then
 				' 显示当前 ip 地址
 				Console.WriteLine(ip.ToString)
 			End If
 			flag = False
-			' 遍历所有的 isp
-			For Each isp In isps
-				' 如果 ip 地址属于 ips，把标记设为真
-				If ip.ToString.ToLower.StartsWith(isp.ToLower) Then
-					If My.Settings.suffix_switch Then
-						'判断后缀是否与预设的一致，是的才返回
-						If ip.ToString.ToLower.EndsWith(My.Settings.suffix) Then
+			If v = 6 Then
+				' 遍历所有的 isp
+				For Each isp In isps
+					' 如果 ip 地址属于 ips，把标记设为真
+					If ip.ToString.ToLower.StartsWith(isp.ToLower) Then
+						If My.Settings.suffix_switch Then
+							'判断后缀是否与预设的一致，是的才返回
+							If ip.ToString.ToLower.EndsWith(My.Settings.suffix) Then
+								flag = True
+								Exit For
+							End If
+						Else
 							flag = True
 							Exit For
 						End If
-					Else
-						flag = True
-						Exit For
 					End If
-				End If
-			Next
+				Next
+			ElseIf ip.AddressFamily = Sockets.AddressFamily.InterNetwork Then
+				flag = True
+			End If
 			If flag AndAlso i <= l Then
-				' 把属于 isp 的 ip 地址存在 IPv6 数组里
-				IPv6(i) = ip.ToString.ToLower
+				' 把属于 isp 的 ip 地址存在 ipRecode 数组里
+				ipRecode(i) = ip.ToString.ToLower
 				i += 1
 			End If
 		Next
-		Return IPv6
+		Return ipRecode
 	End Function
 
-	Sub UpdateIP(domain As String, token As String, newip As String, oldIP As String)
+	Sub UpdateIP(ByVal domain As String, ByVal token As String, ByVal newip As String, ByVal oldIP As String, Optional ByVal v As Byte = 6)
 		If newip = oldIP Then
 			' 如果新老 IPv6 地址一致，就显示没变化，不执行
-			Console.WriteLine(Process() & "域名 " & domain & " 的 IPv6 地址没有变化，本次更新不执行。")
+			Console.WriteLine($"{Process()}域名 {domain} 的 IPv{v} 地址没有变化，本次更新不执行。")
 		Else
-			Console.WriteLine(Process() & "正在更新域名 " & domain & " 的 IPv6 地址为：" & newip)
-			Dim postData As String = String.Format(My.Settings.param, {domain, token, newip, newip.Substring(0, newip.LastIndexOf(":") + 1)})
+			Console.WriteLine($"{Process()}正在更新域名 {domain} 的 IPv{v} 地址为：{newip}")
+			Dim postData As String
+			If v = 6 Then
+				postData = String.Format(My.Settings.param, {domain, token, newip, newip.Substring(0, newip.LastIndexOf(":") + 1)})
+			Else
+				postData = String.Format(My.Settings.param4, {domain, token, newip})
+			End If
 			Try
 				Dim http As New WebClient
 				http.Headers(HttpRequestHeader.ContentType) = "application/x-www-form-urlencoded"
