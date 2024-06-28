@@ -26,8 +26,5 @@
     <Setting Name="param4" Type="System.String" Scope="User">
       <Value Profile="(Default)">zone={0}&amp;token={1}&amp;ipv4={2}</Value>
     </Setting>
-    <Setting Name="subdomain" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
   </Settings>
 </SettingsFile>

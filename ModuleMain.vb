@@ -10,7 +10,7 @@ Module ModuleMain
 		Console.WriteLine(Process() & "动态域名 IP 地址更新开始" & vbCrLf)
 		Dim tokens() As String = My.Settings.tokens.Split(CChar(","))
 		Dim IPv6() As String = GetIP(Dns.GetHostName)
-		Dim IPv4(tokens.Length - 1) As String
+		Dim IPv4(domains.Length - 1) As String
 		Dim used(domains.Length - 1) As String
 		Dim client As New HttpClient()
 		Dim response As String = client.GetStringAsync("https://4.ipw.cn").GetAwaiter().GetResult()
@@ -57,8 +57,11 @@ Module ModuleMain
 		Dim i As Integer = 0
 		Dim flag As Boolean
 		Dim isp As String
+		Dim renew6 As Byte = 0
 		If Dns.GetHostName = host Then
 			Console.WriteLine(Process() & "本机的 IP 地址有：")
+		Else
+			renew6 = domains.Length
 		End If
 		' 遍历 ipAddress 中的所有 ip 地址
 		For Each ip In ipAddr
@@ -66,6 +69,9 @@ Module ModuleMain
 			If Dns.GetHostName = host Then
 				' 显示当前 ip 地址
 				Console.WriteLine(ip.ToString)
+				If ip.ToString.Contains(My.Settings.suffix) Then
+					renew6 += 1
+				End If
 			End If
 			flag = False
 			If v = 6 Then
@@ -94,6 +100,10 @@ Module ModuleMain
 				i += 1
 			End If
 		Next
+		If domains.Length - renew6 > 0 Then
+			Shell("C:\Windows\System32\ipconfig.exe /release6")
+			Shell("C:\Windows\System32\ipconfig.exe /renew6")
+		End If
 		Return ipRecode
 	End Function
 
@@ -121,6 +131,7 @@ Module ModuleMain
 				End If
 			Catch ex As Exception
 				' 处理错误响应
+				Console.Write(ex)
 			End Try
 		End If
 	End Sub
